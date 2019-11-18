@@ -3,12 +3,13 @@ import App from './App.vue'
 import vuetify from './plugins/vuetify';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
+import { config } from '@config';
 
 
 Vue.config.productionTip = false
 
 firebase.initializeApp({
-  apiKey: "AIzaSyD3y2kMEPmlBYWTcARMIRjHDQLnylFqkDA",
+  apiKey: config.apiKey,
   authDomain: "my-calendar-753e3.firebaseapp.com",
   databaseURL: "https://my-calendar-753e3.firebaseio.com",
   projectId: "my-calendar-753e3",
