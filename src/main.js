@@ -3,20 +3,22 @@ import App from './App.vue'
 import vuetify from './plugins/vuetify';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
-import { config } from '../config';
+import {
+  config
+} from '../config';
 
 
 Vue.config.productionTip = false
 
 firebase.initializeApp({
   apiKey: config.apiKey,
-  authDomain: "my-calendar-753e3.firebaseapp.com",
-  databaseURL: "https://my-calendar-753e3.firebaseio.com",
-  projectId: "my-calendar-753e3",
-  storageBucket: "my-calendar-753e3.appspot.com",
-  messagingSenderId: "737198544480",
-  appId: "1:737198544480:web:e0f2915898710489155505",
-  measurementId: "G-VJWPS24NXJ"
+  authDomain: "calendar-app-255e6.firebaseapp.com",
+  databaseURL: "https://calendar-app-255e6.firebaseio.com",
+  projectId: "calendar-app-255e6",
+  storageBucket: "calendar-app-255e6.appspot.com",
+  messagingSenderId: "618985679217",
+  appId: "1:618985679217:web:3adb2d5138aa5119e9aed0",
+  measurementId: "G-HKX2H7D3KE"
 });
 
 export const db = firebase.firestore();
