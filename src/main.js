@@ -1,17 +1,17 @@
 import Vue from 'vue'
 import App from './App.vue'
 import vuetify from './plugins/vuetify';
+import VueTextareaAutosize from 'vue-textarea-autosize';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
-import {
-  config
-} from '../config';
+import { firebaseConfig } from '../firebase.config';
 
+Vue.use(VueTextareaAutosize);
 
 Vue.config.productionTip = false
 
 firebase.initializeApp({
-  apiKey: config.apiKey,
+  apiKey: firebaseConfig.apiKey,
   authDomain: "calendar-app-255e6.firebaseapp.com",
   databaseURL: "https://calendar-app-255e6.firebaseio.com",
   projectId: "calendar-app-255e6",
