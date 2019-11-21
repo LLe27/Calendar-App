@@ -3,6 +3,9 @@
     <v-col>
       <v-sheet height="64">
         <v-toolbar flat color="white">
+          <v-btn color="primary" class="mr-4" @click="dialog = true" dark>
+            Add Event
+          </v-btn>
           <v-btn outlined class="mr-4" @click="setToday">
             Today
           </v-btn>
@@ -38,6 +41,24 @@
           </v-menu>
         </v-toolbar>
       </v-sheet>
+      <!-- Add event dialog -->
+      <v-dialog v-model="dialog" max-width="500">
+        <v-card>
+          <v-container>
+            <v-form @submit.prevent="addEvent">
+              <v-text-field v-model="name" type="text" label="Event name(required)"></v-text-field>
+              <v-text-field v-model="description" type="text" label="Description"></v-text-field>
+              <v-text-field v-model="start" type="date" label="Start (required)"></v-text-field>
+              <v-text-field v-model="end" type="date" label="End (required)"></v-text-field>
+              <v-text-field v-model="color" type="color" label="Click (click to open color menu)"></v-text-field>
+              <v-btn type="submit" color="primary" class="mr-4" @click.stop="dialog=false">
+                Create Event
+              </v-btn>
+            </v-form>
+          </v-container>
+        </v-card>
+      </v-dialog>
+
       <v-sheet height="600">
         <v-calendar ref="calendar" v-model="focus" color="primary" :events="events" :event-color="getEventColor"
           :event-margin-bottom="3" :now="today" :type="type" @click:event="showEvent" @click:more="viewDay"
@@ -72,8 +93,7 @@
                 @click.prevent="editEvent(selectedEvent)">
                 Edit
               </v-btn>
-               <v-btn text color="secondary" v-else
-                @click.prevent="updateEvent(selectedEvent)">
+              <v-btn text color="secondary" v-else @click.prevent="updateEvent(selectedEvent)">
                 Save
               </v-btn>
               <v-btn text color="secondary" @click="selectedOpen = false">
@@ -111,7 +131,8 @@ export default {
     selectedElement: null,
     selectedOpen: false,
     events: [],
-    dialog: false
+    dialog: false,
+    studentId: null
   }),
   computed: {
       title () {
@@ -152,6 +173,35 @@ export default {
     this.getEvents();
   },
   methods: {
+    async addEvent() {
+      if (this.name && this.start && this.end) {
+        await db.collection('students').doc(this.studentId).collection('classSchedule').add({
+          name: this.name,
+          description: this.description,
+          start: this.start,
+          end: this.end,
+          color: this.color
+        });
+
+        this.getEvents();
+        this.name = "";
+        this.description = "";
+        this.start = "";
+        this.end = "";
+        this.color = "#002366";
+      }
+      else {
+        alert('Name, start and end date are required!');
+      }
+    },
+    async deleteEvent(event) {
+      /* eslint-disable */
+      await db.collection('students').doc(this.studentId).collection('classSchedule').doc(event).delete();
+
+      this.selectedOpen = false;
+      this.getEvents();
+      /* eslint-enable */
+    },
     async getEvents() {
       /* eslint-disable */
       let snapshot = await db.collection('students').get();
@@ -160,6 +210,7 @@ export default {
       // Students collection
       snapshot.forEach(doc => {
         let id = doc.id;
+        this.studentId = doc.id;
         // let data = doc.data();
 
         // Class schedule collection
@@ -173,6 +224,16 @@ export default {
       })
 
       this.events = events;
+      /* eslint-enable */
+    },
+    async updateEvent(event) {
+      /* eslint-disable */
+      await db.collection('students').doc(this.studentId).collection('classSchedule').doc(event.id).update({
+        description: event.description
+      });
+
+      this.selectedOpen = false;
+      this.currentlyEditing = null;
       /* eslint-enable */
     },
     viewDay({ date }) {
